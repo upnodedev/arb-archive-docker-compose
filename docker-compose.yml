@@ -14,7 +14,7 @@ services:
       - 8557
       - 8558
     volumes:
-      - /some/local/dir/arbitrum-mainnet:/home/user/.arbitrum/mainnet
+      - ./datadir/arbitrum-classic:/home/user/.arbitrum/mainnet
     networks:
       - arbitrum-network
 
@@ -33,7 +33,7 @@ services:
       - "8547:8547"
       - "8548:8548"
     volumes:
-      - ./datadir:/home/user/.arbitrum
+      - ./datadir/arbitrum-nitro:/home/user/.arbitrum
     networks:
       - arbitrum-network
     depends_on:
