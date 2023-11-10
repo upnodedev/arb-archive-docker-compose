@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  arbitrum-classic:
+    image: offchainlabs/arb-node:v1.4.5-e97c1a4
+    command: >
+      --l1.url=${L1_RPC}
+      --node.chain-id=42161
+      --l2.disable-upstream
+      --node.cache.allow-slow-lookup
+      --core.checkpoint-gas-frequency=156250000
+      --core.lazy-load-core-machine
+    expose:
+      - 8557
+      - 8558
+    volumes:
+      - /some/local/dir/arbitrum-mainnet:/home/user/.arbitrum/mainnet
+    networks:
+      - arbitrum-network
+
+  arbitrum-nitro:
+    image: offchainlabs/nitro-node:${NITRO_VERSION:-v2.1.1-e9d8842}
+    command: >
+      --parent-chain.connection.url=${L1_RPC}
+      --chain.id=42161
+      --node.rpc.classic-redirect=http://arbitrum-classic:8557
+      --http.api=net,web3,eth,debug
+      --http.corsdomain=*
+      --http.addr=0.0.0.0
+      --http.vhosts=*
+      --node.caching.archive
+    ports:
+      - "8547:8547"
+      - "8548:8548"
+    volumes:
+      - ./datadir:/home/user/.arbitrum
+    networks:
+      - arbitrum-network
+    depends_on:
+      - arbitrum-classic
+
+networks:
+  arbitrum-network:
+    driver: bridge
